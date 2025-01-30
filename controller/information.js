@@ -1,11 +1,12 @@
 import { model } from "../config/model.js";
 import { SYSTEM_PROMPT } from "../util/contants.js";
+import { getWeatherDetails } from "../util/weatherInfo.js";
 
 export const promptProcessor = async (req, res) => {
     const { prompt } = req.body;
     let conversation = [
         {
-            role: 'mpdel',
+            role: 'model',
             parts: [{ text: SYSTEM_PROMPT }]
         },
         {
@@ -25,6 +26,8 @@ export const promptProcessor = async (req, res) => {
                 role: 'model',
                 parts: [{ text: JSON.stringify(step) }]
             });
+
+            console.log('Step:', JSON.stringify(step));
             
             switch (step.type) {
                 case 'output':
@@ -33,12 +36,13 @@ export const promptProcessor = async (req, res) => {
                 case 'action':
                     if (step.function === 'getWeatherDetails') {
                         const weatherData = await getWeatherDetails(step.input);
+                        console.log('Weather Data:', JSON.stringify(weatherData.current.temp_c));
                         const observation = {
                             type: 'observation',
-                            observation: JSON.parse(weatherData).temperature
+                            observation: weatherData.current.temp_c
                         };
                         conversation.push({
-                            role: 'user',
+                            role: 'model',
                             parts: [{ text: JSON.stringify(observation) }]
                         });
                     }

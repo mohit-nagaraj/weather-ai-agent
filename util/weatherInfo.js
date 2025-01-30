@@ -1,5 +1,5 @@
 export const getWeatherDetails = async (city) => {
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.WEATHER_API_KEY}`);
+    const response = await fetch(`http://api.weatherapi.com/v1/current.json?key=${process.env.WEATHER_API_KEY}&q=${city}&aqi=no`);
     const data = await response.json();
     return data;
 }
