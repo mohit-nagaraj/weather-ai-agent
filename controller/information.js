@@ -18,7 +18,9 @@ export const promptProcessor = async (req, res) => {
             ]
         });
 
-        return res.json({ result: result.response });
+        let responseText = result.response.candidates[0].content.parts[0].text;
+        
+        return res.json({ result: JSON.parse(responseText) });
     } catch (error) {
         console.error('Gemini API Error:', error);
         return res.status(500).json({ 
